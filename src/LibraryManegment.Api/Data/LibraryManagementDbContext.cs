@@ -10,8 +10,11 @@ public class LibraryManagementDbContext : DbContext
            : base(options)
     {
     }
-    public DbSet<Member> Members => Set<Member>();
-
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<UserInfo> UserInfos => Set<UserInfo>();
+    public DbSet<BookIssue> BookIssues => Set<BookIssue>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(

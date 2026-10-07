@@ -1,6 +1,9 @@
 using LibraryManegment.Api.Data;
-using LibraryManegment.Api.Service.Implementation;
+using LibraryManegment.Api.Models;
+using LibraryManegment.Api.Service.Implementations;
 using LibraryManegment.Api.Service.Interface;
+using LibraryManegment.Api.Service.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
@@ -10,7 +13,12 @@ builder.Services.AddDbContext<LibraryManagementDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("LMConnection")));
 
-builder.Services.AddScoped<IMemberService, MemberService>();
+// Add services to the container.
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserInfoService, UserInfoService>();
+builder.Services.AddScoped<IBookIssueService, BookIssueService>();
 
 
 builder.Services.AddControllers();

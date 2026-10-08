@@ -1,5 +1,4 @@
-﻿
-namespace LibraryManegment.Api.Models;
+﻿namespace LibraryManegment.Api.Models;
 
 public class IssueBook
 {
@@ -15,8 +14,15 @@ public class IssueBook
 
     public DateTime? ReturnDate { get; set; }
 
+    public int? RoleId { get; set; }
+
+    public DateTime? RequestedDueDate { get; set; }
+
+    public int? Status { get; set; }
+
     public Book Book { get; set; } = null!;
 
     public User User { get; set; } = null!;
-}
 
+    public Role? Role { get; set; }
+}

@@ -17,8 +17,7 @@ builder.Services.AddDbContext<LibraryManagementDbContext>(options =>
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
-//builder.Services.AddScoped<IUserInfoService, UserInfoService>();
-//builder.Services.AddScoped<IBookIssueService, BookIssueService>();
+builder.Services.AddScoped<IIssueBookService, IssueBookService>();
 
 
 builder.Services.AddControllers();

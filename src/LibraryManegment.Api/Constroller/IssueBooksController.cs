@@ -1,5 +1,6 @@
 ﻿
 using LibraryManegment.Api.Dtos.BookIssue;
+using LibraryManegment.Api.Dtos.IssueBookDtos;
 using LibraryManegment.Api.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,45 @@ namespace LibraryManegment.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class IssueBooksController(
-    IBookIssueService bookIssueService) : ControllerBase
+public class IssueBooksController(IIssueBookService bookIssueService) : ControllerBase
 {
+    [HttpGet("get-issue-books")]
+    public async Task<IActionResult> GetIssueBooks()
+    {
+        var result = await bookIssueService.GetIssueBooksAsync();
+
+        if (result is null || result.Count == 0)
+        {
+            return NotFound("No issued books found.");
+        }
+
+        return Ok(result);
+    }
+    [HttpGet("issue-book-by-id/{id:int}")]
+    public async Task<IActionResult> GetIssueBookById(int id)
+    {
+        var result = await bookIssueService.GetIssueBookByIdAsync(id);
+
+        if (result is null)
+        {
+            return NotFound("Issued book not found.");
+        }
+
+        return Ok(result);
+    }
+    [HttpGet("issue-books-by-email")]
+    public async Task<IActionResult> GetIssueBooksByEmail([FromQuery] string email)
+    {
+        var result = await bookIssueService
+            .GetIssueBooksByEmailAsync(email);
+
+        if (result.Count == 0)
+        {
+            return NotFound("No issued books found for this email.");
+        }
+
+        return Ok(result);
+    }
     [HttpPost("issue-book")]
     public async Task<IActionResult> IssueBook(
         [FromBody] CreateIssueBookDto bookIssueDto)
@@ -20,7 +57,7 @@ public class IssueBooksController(
         if (!result)
         {
             return BadRequest(
-                "Book is not available or User does not exist.");
+                "Book is not available or user does not exist.");
         }
 
         return Ok(new
@@ -34,7 +71,7 @@ public class IssueBooksController(
         [FromBody] ReturnIssueBookDto bookIssueDto)
     {
         var result = await bookIssueService
-            .ReturnBookIssueAsync(bookIssueDto);
+            .ReturnIssueBookAsync(bookIssueDto);
 
         if (!result)
         {
@@ -46,6 +83,71 @@ public class IssueBooksController(
         {
             message = "Book returned successfully."
         });
+    }
+
+    [HttpPut("request-extension")]
+    public async Task<IActionResult> RequestExtension([FromBody] ExtentedRequestDto requestDto)
+    {
+        var result = await bookIssueService
+            .RequestDueDateExtensionAsync(requestDto);
+
+        if (!result)
+        {
+            return NotFound(
+                "Issue book not found or the book has already been returned.");
+        }
+
+        return Ok(
+         "Due date extension request submitted successfully."
+        );
+    }
+
+    [HttpGet("get-all-extension-requests")]
+    public async Task<IActionResult> GetExtensionRequests([FromQuery] int roleId)
+    {
+        var result = await bookIssueService
+            .GetExtensionRequestsAsync(roleId);
+
+        if (result.Count == 0)
+        {
+            return NotFound("No extension requests found.");
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPatch("approve-extension/{id:int}")]
+    public async Task<IActionResult> ApproveExtension(int id)
+    {
+        var result = await bookIssueService
+            .ApproveExtensionRequestAsync(id);
+
+        if (!result)
+        {
+            return BadRequest(
+                "Extension request cannot be approved.");
+        }
+
+        return Ok(
+         "Extension request approved successfully."
+       );
+    }
+
+    [HttpPatch("reject-extension/{id:int}")]
+    public async Task<IActionResult> RejectExtension(int id)
+    {
+        var result = await bookIssueService
+            .RejectExtensionRequestAsync(id);
+
+        if (!result)
+        {
+            return BadRequest(
+                "Extension request cannot be rejected.");
+        }
+
+        return Ok(
+            "Extension request rejected successfully."
+       );
     }
 }
 

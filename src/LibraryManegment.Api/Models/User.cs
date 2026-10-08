@@ -13,4 +13,8 @@ public class User
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+    public int RoleId { get; set; }
+    // Navigation Property
+    public Role Role { get; set; } = null!;
+    public int Status { get; set; }
 }

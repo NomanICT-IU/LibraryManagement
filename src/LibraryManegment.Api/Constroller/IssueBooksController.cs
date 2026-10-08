@@ -7,12 +7,12 @@ namespace LibraryManegment.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BookIssuesController(
+public class IssueBooksController(
     IBookIssueService bookIssueService) : ControllerBase
 {
     [HttpPost("issue-book")]
     public async Task<IActionResult> IssueBook(
-        [FromBody] CreateBookIssueDto bookIssueDto)
+        [FromBody] CreateIssueBookDto bookIssueDto)
     {
         var result = await bookIssueService
             .IssueBookAsync(bookIssueDto);
@@ -31,7 +31,7 @@ public class BookIssuesController(
 
     [HttpPut("return-book")]
     public async Task<IActionResult> ReturnBook(
-        [FromBody] ReturnBookIssueDto bookIssueDto)
+        [FromBody] ReturnIssueBookDto bookIssueDto)
     {
         var result = await bookIssueService
             .ReturnBookIssueAsync(bookIssueDto);

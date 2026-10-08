@@ -72,7 +72,6 @@ public class UserService : IUserService
             .ToListAsync();
     }
 
-
     public async Task<UserDto> GetUserByIdAsync(int id)
     {
         var user = await _context.Users
@@ -86,6 +85,21 @@ public class UserService : IUserService
         // Entity → DTO
         return user.Adapt<UserDto>();
     }
+    public async Task<UserDto> GetUserByEmailAsync(string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Email == email);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        // Entity → DTO
+        return user.Adapt<UserDto>();
+    }
+
+
 
     public async Task<bool> UpdateUserAsync(
         int id,
@@ -101,6 +115,24 @@ public class UserService : IUserService
 
         // Map DTO → existing entity
         updateUserDto.Adapt(user);
+
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateUserRoleAsync(int id, UpdateUserRoleDto updateUserRoleDto)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (user == null)
+        {
+            return false;
+        }
+        updateUserRoleDto.Adapt(user);
 
         user.UpdatedAt = DateTime.UtcNow;
 

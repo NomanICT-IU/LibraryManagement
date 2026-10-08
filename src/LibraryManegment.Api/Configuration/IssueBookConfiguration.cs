@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LibraryManegment.Api.Data.Configurations;
 
-public class BookIssueConfiguration : IEntityTypeConfiguration<BookIssue>
+public class IssueBookConfiguration : IEntityTypeConfiguration<IssueBook>
 {
-    public void Configure(EntityTypeBuilder<BookIssue> builder)
+    public void Configure(EntityTypeBuilder<IssueBook> builder)
     {
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.BookId)
             .IsRequired();
 
-        builder.Property(x => x.UserInfoId)
+        builder.Property(x => x.UserId)
             .IsRequired();
 
         builder.Property(x => x.IssueDate)
@@ -32,12 +32,12 @@ public class BookIssueConfiguration : IEntityTypeConfiguration<BookIssue>
             .HasForeignKey(x => x.BookId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.UserInfo)
+        builder.HasOne(x => x.User)
             .WithMany()
-            .HasForeignKey(x => x.UserInfoId)
+            .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(x => new { x.BookId, x.UserInfoId });
+        builder.HasIndex(x => new { x.BookId, x.UserId });
     }
 }
 

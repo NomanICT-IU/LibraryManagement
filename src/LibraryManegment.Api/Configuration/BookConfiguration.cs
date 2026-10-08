@@ -28,10 +28,6 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(x => x.Quantity)
                .IsRequired();
 
-        builder.Property(x => x.Status)
-               .IsRequired()
-               .HasDefaultValue(1);
-
         builder.HasIndex(x => x.ISBN)
                .IsUnique();
     }

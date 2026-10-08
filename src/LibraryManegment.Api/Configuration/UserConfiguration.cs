@@ -31,5 +31,21 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.UpdatedAt)
                .IsRequired(false);
+
+        // RoleId
+        builder.Property(x => x.RoleId)
+               .IsRequired()
+               .HasDefaultValue(4);
+
+        // Status
+        builder.Property(x => x.Status)
+               .IsRequired()
+               .HasDefaultValue(1);
+
+        // User -> Role relationship
+        builder.HasOne(x => x.Role)
+               .WithMany()
+               .HasForeignKey(x => x.RoleId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace LibraryManegment.Api.Dtos.BookIssue;
 
-public class CreateBookIssueDto
+public class CreateIssueBookDto
 {
     public int BookId { get; set; }
     public int UserInfoId { get; set; }

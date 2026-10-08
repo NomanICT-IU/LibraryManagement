@@ -6,6 +6,6 @@ namespace LibraryManegment.Api.Service.Interfaces;
 
 public interface IBookIssueService
 {
-    Task<bool> IssueBookAsync(CreateBookIssueDto bookIssueDto);
-    Task<bool> ReturnBookIssueAsync(ReturnBookIssueDto bookIssueDto);
+    Task<bool> IssueBookAsync(CreateIssueBookDto bookIssueDto);
+    Task<bool> ReturnBookIssueAsync(ReturnIssueBookDto bookIssueDto);
 }

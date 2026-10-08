@@ -1,13 +1,13 @@
 ﻿
 namespace LibraryManegment.Api.Models;
 
-public class BookIssue
+public class IssueBook
 {
     public int Id { get; set; }
 
     public int BookId { get; set; }
 
-    public int UserInfoId { get; set; }
+    public int UserId { get; set; }
 
     public DateTime IssueDate { get; set; }
 
@@ -17,6 +17,6 @@ public class BookIssue
 
     public Book Book { get; set; } = null!;
 
-    public UserInfo UserInfo { get; set; } = null!;
+    public User User { get; set; } = null!;
 }
 

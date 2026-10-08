@@ -10,5 +10,4 @@ public class UpdateBookDto
 
     public int Quantity { get; set; }
 
-    public int Status { get; set; }
 }

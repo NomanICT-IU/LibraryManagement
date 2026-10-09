@@ -98,12 +98,20 @@ public class UserService : IUserService
         // Entity → DTO
         return user.Adapt<UserDto>();
     }
+    public async Task<User> GetUserIndentityAsync(string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Email == email);
+
+        if (user == null)
+        {
+            return null;
+        }
+        return user;
+    }
 
 
-
-    public async Task<bool> UpdateUserAsync(
-        int id,
-        UpdateUserDto updateUserDto)
+    public async Task<bool> UpdateUserAsync(int id, UpdateUserDto updateUserDto)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -139,5 +147,25 @@ public class UserService : IUserService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<List<UserPermissionDto>> GetPermissionsByUserIdAsync(int id)
+    {
+        return await (
+            from u in _context.Users.AsNoTracking()
+            join rp in _context.RolePermissions.AsNoTracking()
+                on u.RoleId equals rp.RoleId
+            join r in _context.Roles.AsNoTracking()
+                on rp.RoleId equals r.Id
+            join p in _context.Permissions.AsNoTracking()
+                on rp.PermissionId equals p.Id
+            where u.Id == id
+            select new UserPermissionDto
+            {
+                UserId = u.Id,
+                RoleName = r.Name,
+                PermissionName = p.Name
+            }
+        ).ToListAsync();
     }
 }

@@ -1,14 +1,17 @@
 ﻿using LibraryManegment.Api.Dtos.BookDtos;
 using LibraryManegment.Api.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManegment.Api.Constroller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class BooksController(IBookService bookService) : ControllerBase
 {
     [HttpGet("get-books")]
+    [Authorize(Policy = "Book.Read")]
     public async Task<IActionResult> GetAll()
     {
         var books = await bookService.GetAllAsync();
@@ -22,6 +25,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpGet("get-book-by-id/{id:int}")]
+    [Authorize(Policy = "Book.Read")]
     public async Task<IActionResult> GetById(int id)
     {
         var book = await bookService.GetByIdAsync(id);
@@ -35,6 +39,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpPost("create-book")]
+    [Authorize(Policy = "Book.Create")]
     public async Task<IActionResult> Create(CreateBookDto dto)
     {
         var book = await bookService.CreateAsync(dto);
@@ -46,11 +51,12 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpPut("update-book/{id:int}")]
+    [Authorize(Policy = "Book.Update")]
     public async Task<IActionResult> Update(int id, UpdateBookDto dto)
     {
-        var book = await bookService.UpdateAsync(id, dto);
+        var updated = await bookService.UpdateAsync(id, dto);
 
-        if (!book)
+        if (!updated)
         {
             return NotFound($"Book with ID {id} was not found.");
         }
@@ -59,6 +65,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpDelete("delete-book/{id:int}")]
+    [Authorize(Policy = "Book.Delete")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await bookService.DeleteAsync(id);
@@ -68,10 +75,6 @@ public class BooksController(IBookService bookService) : ControllerBase
             return NotFound($"Book with ID {id} was not found.");
         }
 
-        return Ok(new
-        {
-            Message = "Book deleted successfully."
-        });
-
+        return Ok(new { Message = "Book deleted successfully." });
     }
 }

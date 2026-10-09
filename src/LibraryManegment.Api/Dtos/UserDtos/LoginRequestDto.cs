@@ -1,6 +1,6 @@
-﻿namespace LibraryManegment.Api.Dtos.User;
+﻿namespace LibraryManegment.Api.Dtos.UserDtos;
 
-public class LoginUserDto
+public class LoginRequestDto
 {
     public string Email { get; set; } = null!;
 

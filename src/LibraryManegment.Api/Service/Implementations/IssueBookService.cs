@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManegment.Api.Service.Implementations;
 
-public class IssueBookService(LibraryManagementDbContext context) : IIssueBookService
+public class IssueBookService(LibraryManagementDbContext context, INotificationService notificationService) : IIssueBookService
 {
     public async Task<bool> IssueBookAsync(CreateIssueBookDto issueBookDto)
     {
@@ -151,6 +151,9 @@ public class IssueBookService(LibraryManagementDbContext context) : IIssueBookSe
         issueBook.Status = 1;
 
         await context.SaveChangesAsync();
+        await notificationService.NotifyReviewersAsync(
+        issueBook.Id,
+        "A member has submitted a book extension request.");
 
         return true;
     }
@@ -193,6 +196,10 @@ public class IssueBookService(LibraryManagementDbContext context) : IIssueBookSe
         issueBook.Status = 2;
 
         await context.SaveChangesAsync();
+        await notificationService.NotifyMemberAsync(
+       issueBook.UserId,
+       issueBook.Id,
+       "Your book extension request has been approved.");
 
         return true;
     }
@@ -213,6 +220,10 @@ public class IssueBookService(LibraryManagementDbContext context) : IIssueBookSe
         issueBook.Status = 3;
 
         await context.SaveChangesAsync();
+        await notificationService.NotifyMemberAsync(
+       issueBook.UserId,
+       issueBook.Id,
+       "Your book extension request has been rejected.");
 
         return true;
     }

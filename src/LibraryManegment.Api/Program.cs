@@ -1,5 +1,6 @@
 
 using LibraryManegment.Api.Data;
+using LibraryManegment.Api.Hubs;
 using LibraryManegment.Api.Models;
 using LibraryManegment.Api.Service.Implementations;
 using LibraryManegment.Api.Service.Interface;
@@ -23,6 +24,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IIssueBookService, IssueBookService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtSigner, JwtSigner>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+builder.Services.AddSignalR();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -45,12 +49,29 @@ builder.Services
                 Encoding.UTF8.GetBytes(secretKey)),
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/notificationHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("User.Read", policy =>
-       policy.RequireClaim("permission", "User.Read"));
+        policy.RequireClaim("permission", "User.Read"));
 
     options.AddPolicy("User.Create", policy =>
         policy.RequireClaim("permission", "User.Create"));
@@ -151,5 +172,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.MapHub<NotificationHub>("/notificationHub");
 
+app.Run();

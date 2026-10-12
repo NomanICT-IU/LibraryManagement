@@ -1,18 +1,17 @@
 ﻿using LibraryManegment.Api.Dtos.BookIssue;
 using LibraryManegment.Api.Dtos.IssueBookDtos;
 using LibraryManegment.Api.Service.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManegment.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class IssueBooksController(IIssueBookService bookIssueService) : ControllerBase
 {
     [HttpGet("get-issue-books")]
-    [Authorize(Policy = "BookIssue.Read")]
+    //[Authorize(Policy = "BookIssue.Read")]
     public async Task<IActionResult> GetIssueBooks()
     {
         var result = await bookIssueService.GetIssueBooksAsync();
@@ -24,7 +23,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpGet("issue-book-by-id/{id:int}")]
-    [Authorize(Policy = "BookIssue.Read")]
+    //[Authorize(Policy = "BookIssue.Read")]
     public async Task<IActionResult> GetIssueBookById(int id)
     {
         var result = await bookIssueService.GetIssueBookByIdAsync(id);
@@ -36,7 +35,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpGet("issue-books-by-email")]
-    [Authorize(Policy = "BookIssue.Read")]
+    //[Authorize(Policy = "BookIssue.Read")]
     public async Task<IActionResult> GetIssueBooksByEmail([FromQuery] string email)
     {
         var result = await bookIssueService.GetIssueBooksByEmailAsync(email);
@@ -48,7 +47,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpPost("issue-book")]
-    [Authorize(Policy = "BookIssue.Create")]
+    //[Authorize(Policy = "BookIssue.Create")]
     public async Task<IActionResult> IssueBook(
         [FromBody] CreateIssueBookDto bookIssueDto)
     {
@@ -64,7 +63,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpPut("return-book")]
-    [Authorize(Policy = "BookIssue.Return")]
+    //[Authorize(Policy = "BookIssue.Return")]
     public async Task<IActionResult> ReturnBook(
         [FromBody] ReturnIssueBookDto bookIssueDto)
     {
@@ -81,7 +80,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpPut("request-extension")]
-    [Authorize(Policy = "ExtensionRequest.Create")]
+    //[Authorize(Policy = "ExtensionRequest.Create")]
     public async Task<IActionResult> RequestExtension(
         [FromBody] ExtentedRequestDto requestDto)
     {
@@ -95,7 +94,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpGet("get-all-extension-requests")]
-    [Authorize(Policy = "ExtensionRequest.Read")]
+    //[Authorize(Policy = "ExtensionRequest.Read")]
     public async Task<IActionResult> GetExtensionRequests([FromQuery] int roleId)
     {
         var result = await bookIssueService.GetExtensionRequestsAsync(roleId);
@@ -107,7 +106,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpPatch("approve-extension/{id:int}")]
-    [Authorize(Policy = "ExtensionRequest.Approve")]
+    //[Authorize(Policy = "ExtensionRequest.Approve")]
     public async Task<IActionResult> ApproveExtension(int id)
     {
         var result = await bookIssueService.ApproveExtensionRequestAsync(id);
@@ -119,7 +118,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
     }
 
     [HttpPatch("reject-extension/{id:int}")]
-    [Authorize(Policy = "ExtensionRequest.Reject")]
+    //[Authorize(Policy = "ExtensionRequest.Reject")]
     public async Task<IActionResult> RejectExtension(int id)
     {
         var result = await bookIssueService.RejectExtensionRequestAsync(id);

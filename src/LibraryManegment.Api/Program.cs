@@ -25,6 +25,7 @@ builder.Services.AddScoped<IIssueBookService, IssueBookService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtSigner, JwtSigner>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddSignalR();
 
@@ -131,22 +132,22 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Library Management System API"
     });
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter your JWT access token."
-    });
+    //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    //{
+    //    Name = "Authorization",
+    //    Type = SecuritySchemeType.Http,
+    //    Scheme = "bearer",
+    //    BearerFormat = "JWT",
+    //    In = ParameterLocation.Header,
+    //    Description = "Enter your JWT access token."
+    //});
 
-    options.AddSecurityRequirement(document =>
-        new OpenApiSecurityRequirement
-        {
-            [new OpenApiSecuritySchemeReference("Bearer", document)] =
-                new List<string>()
-        });
+    //options.AddSecurityRequirement(document =>
+    //    new OpenApiSecurityRequirement
+    //    {
+    //        [new OpenApiSecuritySchemeReference("Bearer", document)] =
+    //            new List<string>()
+    //    });
 });
 
 var app = builder.Build();

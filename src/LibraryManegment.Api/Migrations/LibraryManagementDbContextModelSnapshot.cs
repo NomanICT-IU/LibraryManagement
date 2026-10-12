@@ -72,6 +72,9 @@ namespace LibraryManegment.Api.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BookId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
@@ -95,11 +98,18 @@ namespace LibraryManegment.Api.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BookId1");
 
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.HasIndex("BookId", "UserId");
 
@@ -239,6 +249,10 @@ namespace LibraryManegment.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LibraryManegment.Api.Models.Book", null)
+                        .WithMany("IssueBooks")
+                        .HasForeignKey("BookId1");
+
                     b.HasOne("LibraryManegment.Api.Models.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId");
@@ -248,6 +262,10 @@ namespace LibraryManegment.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("LibraryManegment.Api.Models.User", null)
+                        .WithMany("IssueBooks")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Book");
 
@@ -286,6 +304,11 @@ namespace LibraryManegment.Api.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("LibraryManegment.Api.Models.Book", b =>
+                {
+                    b.Navigation("IssueBooks");
+                });
+
             modelBuilder.Entity("LibraryManegment.Api.Models.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -294,6 +317,11 @@ namespace LibraryManegment.Api.Migrations
             modelBuilder.Entity("LibraryManegment.Api.Models.Role", b =>
                 {
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("LibraryManegment.Api.Models.User", b =>
+                {
+                    b.Navigation("IssueBooks");
                 });
 #pragma warning restore 612, 618
         }

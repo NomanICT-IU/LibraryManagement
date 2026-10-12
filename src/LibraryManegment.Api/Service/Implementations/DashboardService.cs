@@ -19,7 +19,7 @@ public class DashboardService(LibraryManagementDbContext context) : IDashboardSe
         var availableCopies = totalBookCopies - borrowedCopies;
 
 
-        var allMembers = await context.Users.CountAsync();
+        var allMembers = await context.Users.CountAsync(u => u.RoleId == 4);
 
 
         var recentBorrowedBooks = await context.IssueBooks

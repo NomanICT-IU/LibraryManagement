@@ -153,6 +153,7 @@ public class IssueBookService(LibraryManagementDbContext context, INotificationS
         await context.SaveChangesAsync();
         await notificationService.NotifyReviewersAsync(
         issueBook.Id,
+        issueBook.RoleId.Value,
         "A member has submitted a book extension request.");
 
         return true;

@@ -11,7 +11,7 @@ namespace LibraryManegment.Api.Service.Implementations;
 
 public class JwtSigner(IConfiguration configuration) : IJwtSigner
 {
-    public (string Token, DateTime ExpiresOnUtc) GenerateAccessToken(User user, List<UserPermissionDto> permissions)
+    public (string Token, DateTime ExpiresOnUtc) GenerateAccessToken(User user, List<UserPermissionDto> permissions, List<UserRoleDto> roles)
     {
         var jwtSettings = configuration.GetSection("Jwt");
 
@@ -31,6 +31,12 @@ public class JwtSigner(IConfiguration configuration) : IJwtSigner
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email)
         };
+        // Add multiple role claims
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim("role", role.RoleName));
+        }
+
 
         foreach (var permission in permissions)
         {

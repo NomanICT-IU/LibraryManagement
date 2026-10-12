@@ -31,9 +31,10 @@ public class AuthService(IUserService userService, IPasswordHasher<User> passwor
 
         var permissions =
             await userService.GetPermissionsByUserIdAsync(user.Id);
+        var roles = await userService.GetRolesByUserIdAsync(user.Id);
 
         var (accessToken, expiresOnUtc) =
-            jwtSigner.GenerateAccessToken(user, permissions);
+            jwtSigner.GenerateAccessToken(user, permissions, roles);
 
         var refreshToken = jwtSigner.GenerateRefreshToken();
 

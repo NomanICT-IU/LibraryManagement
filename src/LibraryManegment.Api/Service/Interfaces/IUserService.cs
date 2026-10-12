@@ -15,6 +15,8 @@ public interface IUserService
     Task<bool> DeleteUserAsync(int id);
     Task<User> GetUserIndentityAsync(string email);
     Task<List<UserPermissionDto>> GetPermissionsByUserIdAsync(int Id);
+    Task<List<UserRoleDto>> GetRolesByUserIdAsync(int Id);
+
     //Task<bool> ChangePasswordAsync(int id, ChangePasswordDto changePasswordDto);
     //Task<bool> LoginUserAsync(LoginUserDto loginUserDto);
 }

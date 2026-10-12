@@ -168,4 +168,22 @@ public class UserService : IUserService
             }
         ).ToListAsync();
     }
+    //using UserRole Database to get the roles of a user by user id
+    public async Task<List<UserRoleDto>> GetRolesByUserIdAsync(int Id)
+    {
+        var result = await (
+            from u in _context.Users
+            join r in _context.Roles
+                on u.RoleId equals r.Id
+            where u.Id == Id
+            select new UserRoleDto
+            {
+                Id = u.Id,
+                RoleId = r.Id,
+                RoleName = r.Name
+            }
+        ).ToListAsync();
+
+        return result;
+    }
 }

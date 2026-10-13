@@ -18,11 +18,11 @@ public class BookService(LibraryManagementDbContext context) : IBookService
         return books.Adapt<IEnumerable<BookDto>>();
     }
 
-    public async Task<BookDto> GetByIdAsync(int id)
+    public async Task<BookDto> GetByTitleAsync(string title)
     {
         var book = await context.Books
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Name == title);
 
         return book?.Adapt<BookDto>();
     }
@@ -62,6 +62,21 @@ public class BookService(LibraryManagementDbContext context) : IBookService
             return false;
 
         context.Books.Remove(book);
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> AddQuantityAsync(AddQuantityDto dto)
+    {
+        var book = await context.Books
+            .FirstOrDefaultAsync(b => b.Id == dto.Id);
+
+        if (book is null)
+            return false;
+
+        book.Quantity += dto.Quantity;
 
         await context.SaveChangesAsync();
 

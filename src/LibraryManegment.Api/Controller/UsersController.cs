@@ -105,20 +105,20 @@ public class UsersController(IUserService userService) : ControllerBase
         });
     }
 
-    [HttpDelete("delete-user/{id:int}")]
-    //[Authorize(Policy = "User.Delete")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var result = await userService.DeleteUserAsync(id);
+    //[HttpDelete("delete-user/{id:int}")]
+    ////[Authorize(Policy = "User.Delete")]
+    //public async Task<IActionResult> DeleteUser(int id)
+    //{
+    //    var result = await userService.DeleteUserAsync(id);
 
-        if (!result)
-        {
-            return NotFound("User not found.");
-        }
+    //    if (!result)
+    //    {
+    //        return NotFound("User not found.");
+    //    }
 
-        return Ok(new
-        {
-            message = "User deleted successfully."
-        });
-    }
+    //    return Ok(new
+    //    {
+    //        message = "User deleted successfully."
+    //    });
+    //}
 }

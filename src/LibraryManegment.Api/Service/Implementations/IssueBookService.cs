@@ -93,7 +93,6 @@ public class IssueBookService(LibraryManagementDbContext context, INotificationS
             .Select(x => new IssueBookDto
             {
                 Id = x.Id,
-                UserName = x.User.Name,
                 BookName = x.Book.Name,
                 IssueDate = x.IssueDate,
                 DueDate = x.DueDate
@@ -108,7 +107,6 @@ public class IssueBookService(LibraryManagementDbContext context, INotificationS
             .Select(x => new IssueBookDto
             {
                 Id = x.Id,
-                UserName = x.User.Name,
                 BookName = x.Book.Name,
                 IssueDate = x.IssueDate,
                 DueDate = x.DueDate
@@ -125,7 +123,6 @@ public class IssueBookService(LibraryManagementDbContext context, INotificationS
             .Select(x => new IssueBookDto
             {
                 Id = x.Id,
-                UserName = x.User.Name,
                 BookName = x.Book.Name,
                 IssueDate = x.IssueDate,
                 DueDate = x.DueDate

@@ -23,15 +23,15 @@ public class BooksController(IBookService bookService) : ControllerBase
         return Ok(books);
     }
 
-    [HttpGet("get-book-by-id/{id:int}")]
+    [HttpGet("get-book-by-title")]
     //[Authorize(Policy = "Book.Read")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetByTitle(string title)
     {
-        var book = await bookService.GetByIdAsync(id);
+        var book = await bookService.GetByTitleAsync(title);
 
         if (book is null)
         {
-            return NotFound($"Book with ID {id} was not found.");
+            return NotFound($"Book with title {title} was not found.");
         }
 
         return Ok(book);
@@ -44,8 +44,8 @@ public class BooksController(IBookService bookService) : ControllerBase
         var book = await bookService.CreateAsync(dto);
 
         return CreatedAtAction(
-            nameof(GetById),
-            new { id = book.Id },
+            nameof(GetByTitle),
+            new { title = book.Name },
             book);
     }
 
@@ -63,17 +63,34 @@ public class BooksController(IBookService bookService) : ControllerBase
         return Ok(new { Message = "Book updated successfully." });
     }
 
-    [HttpDelete("delete-book/{id:int}")]
-    //[Authorize(Policy = "Book.Delete")]
-    public async Task<IActionResult> Delete(int id)
+
+    //[HttpDelete("delete-book/{id:int}")]
+    ////[Authorize(Policy = "Book.Delete")]
+    //public async Task<IActionResult> Delete(int id)
+    //{
+    //    var deleted = await bookService.DeleteAsync(id);
+
+    //    if (!deleted)
+    //    {
+    //        return NotFound($"Book with ID {id} was not found.");
+    //    }
+
+    //    return Ok(new { Message = "Book deleted successfully." });
+    //}
+
+    [HttpPatch("add-quantity")]
+    public async Task<IActionResult> AddQuantity([FromBody] AddQuantityDto dto)
     {
-        var deleted = await bookService.DeleteAsync(id);
+        if (dto.Quantity <= 0)
+            return BadRequest("Quantity must be greater than zero.");
 
-        if (!deleted)
-        {
-            return NotFound($"Book with ID {id} was not found.");
-        }
+        var result = await bookService.AddQuantityAsync(dto);
 
-        return Ok(new { Message = "Book deleted successfully." });
+        if (!result)
+            return NotFound("Book not found.");
+
+        return Ok(
+        "Book quantity added successfully."
+        );
     }
 }

@@ -48,8 +48,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
 
     [HttpPost("issue-book")]
     //[Authorize(Policy = "BookIssue.Create")]
-    public async Task<IActionResult> IssueBook(
-        [FromBody] CreateIssueBookDto bookIssueDto)
+    public async Task<IActionResult> IssueBook([FromBody] CreateIssueBookDto bookIssueDto)
     {
         var result = await bookIssueService.IssueBookAsync(bookIssueDto);
 
@@ -64,8 +63,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
 
     [HttpPut("return-book")]
     //[Authorize(Policy = "BookIssue.Return")]
-    public async Task<IActionResult> ReturnBook(
-        [FromBody] ReturnIssueBookDto bookIssueDto)
+    public async Task<IActionResult> ReturnBook([FromBody] ReturnIssueBookDto bookIssueDto)
     {
         var result = await bookIssueService.ReturnIssueBookAsync(bookIssueDto);
 
@@ -81,8 +79,7 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
 
     [HttpPut("request-extension")]
     //[Authorize(Policy = "ExtensionRequest.Create")]
-    public async Task<IActionResult> RequestExtension(
-        [FromBody] ExtentedRequestDto requestDto)
+    public async Task<IActionResult> RequestExtension([FromBody] ExtentedRequestDto requestDto)
     {
         var result = await bookIssueService.RequestDueDateExtensionAsync(requestDto);
 
@@ -95,16 +92,50 @@ public class IssueBooksController(IIssueBookService bookIssueService) : Controll
 
     [HttpGet("get-all-extension-requests")]
     //[Authorize(Policy = "ExtensionRequest.Read")]
-    public async Task<IActionResult> GetExtensionRequests([FromQuery] int roleId)
-    {
-        var result = await bookIssueService.GetExtensionRequestsAsync(roleId);
+    //public async Task<IActionResult> GetExtensionRequests([FromQuery] int roleId)
+    //{
+    //    var result = await bookIssueService.GetExtensionRequestsAsync(roleId);
 
-        if (result.Count == 0)
-            return NotFound("No extension requests found.");
+    //    if (result.Count == 0)
+    //        return NotFound("No extension requests found.");
+
+    //    return Ok(result);
+    //}
+    [HttpGet("admin/due-date-extensions/{role}")]
+    public async Task<IActionResult> GetDueDateExtensions(string role)
+    {
+        if (string.IsNullOrWhiteSpace(role))
+        {
+            return BadRequest("Role parameter is required.");
+        }
+
+        var result = await bookIssueService.GetDueDateExtensionsByUserRoleAsync(role);
+
+        if (result == null || result.TotalCount == 0)
+        {
+            return NotFound($"No due date extension requests found for role: {role}");
+        }
 
         return Ok(result);
     }
 
+    [HttpGet("due-date-extensions/user/{userId}")]
+    public async Task<IActionResult> GetDueDateExtensionsById(int userId)
+    {
+        if (userId <= 0)
+        {
+            return BadRequest(new { message = "Invalid User ID." });
+        }
+
+        var result = await bookIssueService.GetDueDateExtensionsByIdAsync(userId);
+
+        if (result == null || result.TotalCount == 0)
+        {
+            return NotFound(new { message = "No due date extension requests found for this user.", totalCount = 0, requests = new List<object>() });
+        }
+
+        return Ok(result);
+    }
     [HttpPatch("approve-extension/{id:int}")]
     //[Authorize(Policy = "ExtensionRequest.Approve")]
     public async Task<IActionResult> ApproveExtension(int id)

@@ -1,5 +1,6 @@
 ﻿using LibraryManegment.Api.Data;
 using LibraryManegment.Api.Dtos.BookIssue;
+using LibraryManegment.Api.Dtos.DateExtensionDtos;
 using LibraryManegment.Api.Dtos.IssueBookDtos;
 using LibraryManegment.Api.Models;
 using LibraryManegment.Api.Service.Interfaces;
@@ -158,23 +159,75 @@ public class IssueBookService(LibraryManagementDbContext context, INotificationS
 
         return true;
     }
-    public async Task<List<GetExtensionRequestDto>> GetExtensionRequestsAsync(int roleId)
+    //public async Task<List<GetExtensionRequestDto>> GetExtensionRequestsAsync(int roleId)
+    //{
+    //    return await context.IssueBooks
+    //        .AsNoTracking()
+    //        .Where(x =>
+    //            x.ReturnDate == null &&
+    //            x.Status == 1 &&
+    //            x.RoleId == roleId)
+    //        .Select(x => new GetExtensionRequestDto
+    //        {
+    //            Id = x.Id,
+    //            UserName = x.User.Name,
+    //            BookName = x.Book.Name,
+    //            DueDate = x.DueDate,
+    //            RequestedDueDate = x.RequestedDueDate
+    //        })
+    //        .ToListAsync();
+    //}
+    public async Task<DueDateExtensionResponseDto> GetDueDateExtensionsByUserRoleAsync(string role)
     {
-        return await context.IssueBooks
-            .AsNoTracking()
-            .Where(x =>
-                x.ReturnDate == null &&
-                x.Status == 1 &&
-                x.RoleId == roleId)
-            .Select(x => new GetExtensionRequestDto
+        var query = context.IssueBooks
+            .Join(context.Roles,
+                ib => ib.RoleId,
+                r => r.Id,
+                (ib, r) => new { IssueBook = ib, Role = r })
+            .Where(x => x.Role.Name == role && x.IssueBook.RequestedDueDate != null)
+            .Select(x => x.IssueBook);
+
+        var totalCount = await query.CountAsync();
+
+        var requests = await query
+            .Select(ib => new DueDateExtensionDetailDto
             {
-                Id = x.Id,
-                UserName = x.User.Name,
-                BookName = x.Book.Name,
-                DueDate = x.DueDate,
-                RequestedDueDate = x.RequestedDueDate
+                Name = ib.User.Name,
+                Title = ib.Book.Name,
+                CurrentDueDate = ib.DueDate,
+                ExtenedDueDate = ib.RequestedDueDate
             })
             .ToListAsync();
+
+        return new DueDateExtensionResponseDto
+        {
+            TotalCount = totalCount,
+            Requests = requests ?? new List<DueDateExtensionDetailDto>()
+        };
+    }
+    public async Task<DueDateExtensionListResponseDto> GetDueDateExtensionsByIdAsync(int userId)
+    {
+        var query = context.IssueBooks
+            .Where(ib => ib.UserId == userId && ib.RequestedDueDate != null && ib.Status == 1);
+
+        var totalCount = await query.CountAsync();
+
+        var requests = await query
+            .Select(ib => new DueDateExtensionDetailListDto
+            {
+                Name = ib.User.Name,
+                Title = ib.Book.Name,
+                CurrentDueDate = ib.DueDate,
+                ExtenedDueDate = ib.RequestedDueDate,
+                Status = ib.Status
+            })
+            .ToListAsync();
+
+        return new DueDateExtensionListResponseDto
+        {
+            TotalCount = totalCount,
+            Requests = requests ?? new List<DueDateExtensionDetailListDto>()
+        };
     }
     public async Task<bool> ApproveExtensionRequestAsync(int id)
     {

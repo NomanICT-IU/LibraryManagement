@@ -1,6 +1,7 @@
 ﻿using LibraryManegment.Api.Dtos.User;
 using LibraryManegment.Api.Dtos.UserDtos;
 using LibraryManegment.Api.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManegment.Api.Constroller;
@@ -8,6 +9,7 @@ namespace LibraryManegment.Api.Constroller;
 [Route("api/[controller]")]
 [ApiController]
 //[Authorize]
+[AllowAnonymous]
 public class UsersController(IUserService userService) : ControllerBase
 {
     [HttpGet("get-users")]

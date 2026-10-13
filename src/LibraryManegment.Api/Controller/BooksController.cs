@@ -1,5 +1,6 @@
 ﻿using LibraryManegment.Api.Dtos.BookDtos;
 using LibraryManegment.Api.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManegment.Api.Constroller;
@@ -7,6 +8,7 @@ namespace LibraryManegment.Api.Constroller;
 [Route("api/[controller]")]
 [ApiController]
 //[Authorize]
+[AllowAnonymous]
 public class BooksController(IBookService bookService) : ControllerBase
 {
     [HttpGet("get-books")]

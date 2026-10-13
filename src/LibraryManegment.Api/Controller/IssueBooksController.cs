@@ -1,6 +1,7 @@
 ﻿using LibraryManegment.Api.Dtos.BookIssue;
 using LibraryManegment.Api.Dtos.IssueBookDtos;
 using LibraryManegment.Api.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManegment.Api.Controllers;
@@ -8,6 +9,7 @@ namespace LibraryManegment.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 //[Authorize]
+[AllowAnonymous]
 public class IssueBooksController(IIssueBookService bookIssueService) : ControllerBase
 {
     [HttpGet("get-issue-books")]
